@@ -3,3 +3,26 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+.search-form {
+  position: relative;
+  left: 40vw;
+  top: 15vh;
+}
+
+.results {
+  position: relative;
+  left: 15vw;
+  top: 20vh;
+  height: 70vh;
+  width: 20vw;
+}
+
+#search-results {
+  overflow: auto;
+  scroll-behavior: smooth;
+  list-style: none;
+  border:1px solid black;
+  height: 60vh;
+  width: 20vw;
+}
