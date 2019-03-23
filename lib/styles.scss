@@ -9,9 +9,13 @@ body {
 }
 
 .search-form {
-  position: relative;
-  left: 40vw;
-  top: 15vh;
+  min-height: 10rem;
+  padding: 6rem;
+  display: flex;
+  flex-direction: column;
+  h3, form {
+    margin: 0 auto;
+  }
 }
 
 .results {
