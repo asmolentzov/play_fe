@@ -8,6 +8,7 @@ body {
   font-family: 'Fira Sans', sans-serif;
   color: #131b23;
   background-image: linear-gradient(#e7dfc6, #816c61);
+  min-height: 100vh;
 }
 
 ul {
@@ -31,22 +32,17 @@ li {
 .info-container{
   display: flex;
   justify-content: space-around;
-  padding: 0 5rem;
 }
 
-.results {
-  height: 70vh;
-  width: 20vw;
-}
-
-.favorites {
-  width: 20vw;
+.box {
+  min-height: 50vh;
+  width: 30vw;
+  background: rgba(233, 241, 247, 0.5);
+  border: 5px solid #2274a5;
+  padding: 2rem;
 }
 
 #search-results {
   overflow: auto;
   scroll-behavior: smooth;
-  border:1px solid black;
-  height: 60vh;
-  width: 20vw;
 }
