@@ -8,6 +8,10 @@ body {
   font-family: 'Fira Sans', sans-serif;
 }
 
+ul {
+  list-style: none;
+}
+
 .search-form {
   min-height: 10rem;
   padding: 6rem;
@@ -18,18 +22,24 @@ body {
   }
 }
 
+.info-container{
+  display: flex;
+  justify-content: space-around;
+  padding: 0 5rem;
+}
+
 .results {
-  position: relative;
-  left: 15vw;
-  top: 20vh;
   height: 70vh;
+  width: 20vw;
+}
+
+.favorites {
   width: 20vw;
 }
 
 #search-results {
   overflow: auto;
   scroll-behavior: smooth;
-  list-style: none;
   border:1px solid black;
   height: 60vh;
   width: 20vw;
