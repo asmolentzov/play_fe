@@ -55,6 +55,11 @@ li {
   scroll-behavior: smooth;
 }
 
+#playlists-list {
+  overflow: auto;
+  scroll-behavior: smooth;
+}
+
 .remove-btn {
   padding: 3px;
   float: right;
