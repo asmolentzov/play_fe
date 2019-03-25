@@ -55,15 +55,16 @@ li {
   scroll-behavior: smooth;
 }
 
-#playlists-list {
-  overflow: auto;
-  scroll-behavior: smooth;
-}
-
-.remove-btn {
+.btn {
+  margin: 3px;
   padding: 3px;
   float: right;
   font-size: xx-small;
   background-color: #e7dfe6;
   border: none;
+}
+
+#playlists-list {
+  overflow: auto;
+  scroll-behavior: smooth;
 }
