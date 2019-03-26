@@ -56,7 +56,7 @@ li {
 }
 
 .accordion {
-  background-color: #white;
+  background-color: #e7dfc6;
   color: #black;
   cursor: pointer;
   padding: 18px;
@@ -68,15 +68,15 @@ li {
 }
 
 .active, .accordion:hover {
-  background-color: #red;
+  background-color: #816c61;
 }
 
 .panel {
   padding: 0 18px;
-  background-color: white;
+  background-color: #e9f1f7;
   display: none;
   overflow: hidden;
-  text-decoration-color: black;
+  color: #131b23;
 }
 
 .btn {
