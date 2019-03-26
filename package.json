@@ -46,6 +46,7 @@
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
-    "dotenv-webpack": "^1.7.0"
+    "dotenv-webpack": "^1.7.0",
+    "express": "^4.16.4"
   }
 }
