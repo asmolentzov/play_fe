@@ -1,6 +1,10 @@
 {
   "name": "self-directed-fe-starter",
   "version": "1.0.0",
+  "engines": {
+    "node": "11.2.0",
+    "npm": "6.x"
+  },
   "description": "Starter kit for Turing School's BEE M4 Self-Directed Project",
   "main": "index.js",
   "proxy": "https://localhost:3000/",
@@ -42,6 +46,7 @@
     "webpack-dev-server": "^1.16.2"
   },
   "dependencies": {
-    "dotenv-webpack": "^1.7.0"
+    "dotenv-webpack": "^1.7.0",
+    "express": "^4.16.4"
   }
 }
