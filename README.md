@@ -1,79 +1,72 @@
-# Self-Directed Front-End Start Kit
+# Play
+
+## Introduction
+Play is a paired project for Module 4 of the [Back-End Engineering Program](https://turing.io/programs/back-end-engineering/) at the [Turing School of Software & Design](https://turing.io/). The project specifications can be found [here](http://backend.turing.io/module4/projects/play/play). Play is a full-stack application built using a Node.js backend with an Express server and a JavaScript frontend. It also calls the MusixMatch API to retrieve song information. [This repo](https://github.com/asmolentzov/play_fe) is the Play FE. You can find the [backend repo here](https://github.com/asmolentzov/play_be).
+
+[Deployed Site](https://asmolentzov.github.io/play_fe/)
+
+[Project Board](https://waffle.io/asmolentzov/play_be)
+
+![Play Main Page](readme_images/main-page.png)
+
+## Features
+Visitors to the Play app can search for artists, which returns a list of songs by that artist:
+![Search Field](readme_images/search.png)
+
+They can then "star" or favorite those songs: 
+![Song List](readme_images/songs.png)
+
+That will store the songs as "favorites", at which point a user can add them to a playlist or remove them as favorites:
+![Favorites](readme_images/favorites.png)
+# Need to add info about playlists here once complete
 
 ## Initial Setup
+To install this project on your local machine:
+1. Clone the repo to your machine: 
+```
+git clone git@github.com:asmolentzov/play_fe.git
+```
+2. Change into the new directory.
+3. Install dependencies: 
+```
+npm install
+```
+4. Sign up for a [MusixMatch API Key](https://developer.musixmatch.com/).
 
-1. Clone this starter kit repository and rename the repository to anything you'd like in one command:
-
-  ```shell
-  git clone git@github.com:turingschool-projects/self-directed-fe-starter.git <name of your choice>
-  ```
-2. Change into the new director directory.
-
-3. Remove the default remote (origin):
-
-  ```shell
-  git remote rm origin
-  ```
-
-4. Create a new repository on GitHub.
-
-5. Add your new repository remote - **your remote URL and user name will be different in the command below**
-
-  ```shell
-  git remote add origin git@github.com:<YOUR GITHUB NAME>/<PROJECT NAME>.git
-  ```
-
-6. Install the dependencies of the starter kit:
-
-  ```shell
-  npm install
-  ```
-
-7. Add, commit, and push up to your repository:
-
-  ```shell
-  git add .
-  git commit -m "Initial commit using starter kit"
-  git push origin master
-  ```
-
-## Running the Server Locally
-
-To see your code in action locally, you need to fire up a development server. Use the command:
-
-```shell
-npm start
+5. Create a `.env` file in the root directory. You will need to add your MusixMatch API Key to the `.env` file in the following format: 
+```
+MUSIXMATCH_API_KEY=<your api key>
+```
+6. Build: 
+```
+npm build
 ```
 
-Once the server is running, visit in your browser:
+## Running the Server Locally
+To run the code locally, use the following command to start the development server: 
+```
+npm run devstart
+```
+Once running, point your browser to: 
+```
+http://localhost:8080/
+```
+# This part will need updating: 
+Currently the base URL for the backend is set to run using a locally deployed backend. You can point it to either the [deployed backend](https://morning-island-25788.herokuapp.com/) or [pull down and run the backend](https://github.com/asmolentzov/play_be) locally also.  
 
-* `http://localhost:8080/` to run your application.
-
-
-## GitHub Pages Setup
-
-This site will be served from GitHub Pages in production.
-
-In order to see your application running on production:
-
-1. From the command line, run `npm run build`.
-
-2. Commit and push your application to GitHub.
-
-3. Visit your repository on Github
-
-4. Go to Settings
-
-5. Under the Github Pages section of Options, select 'master' as your source and click `Save`
-
-Be sure to `npm run build` and commit before each push to master. A few seconds after you push up, you should be able to see your application at <https://your-github-username.github.io/project-name>.
+## How to Contribute
+If you wish to contribute to this repo, you are welcome to make a PR and we would be happy to review it. 
 
 
 ## Built With
-
 * [JavaScript](https://www.javascript.com/)
-* [jQuery](https://jquery.com/)
 * [Express](https://expressjs.com/)
-* [Mocha](https://mochajs.org/)
-* [Chai](https://chaijs.com/)
+* [Waffle](https://waffle.io/)
+* [Webpack](https://webpack.js.org/)
+
+## Authors
+**[Lance Taylor](https://github.com/lptaylor)**
+
+**[Anna Smolentzov](https://github.com/asmolentzov)**
+
 
