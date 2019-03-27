@@ -55,6 +55,30 @@ li {
   scroll-behavior: smooth;
 }
 
+.accordion {
+  background-color: #e7dfc6;
+  color: #black;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+}
+
+.active, .accordion:hover {
+  background-color: #816c61;
+}
+
+.panel {
+  padding: 0 18px;
+  background-color: #e9f1f7;
+  display: none;
+  overflow: hidden;
+  color: #131b23;
+}
+
 .btn {
   margin: 3px;
   padding: 3px;
