@@ -50,6 +50,7 @@
 
 	var trackObjArray = []; // This file is in the entry point in your webpack config.
 
+
 	var DOMstrings = {
 	  searchButton: '#search-btn',
 	  searchField: '#search-field',
@@ -58,13 +59,15 @@
 	  favoriteStar: '.favorite-star',
 	  favoritesList: '#favorites-list',
 	  favoriteRemove: '.remove-btn',
-	  playlistsList: '#playlists-list'
+	  playlistsList: '#playlists-list',
+	  playlistsSongsList: '#playlists-songs-list',
+	  accordion: '.accordion'
 	};
 
 	function Track(id, trackName, trackRating, artistName) {
 	  this.id = id;
 	  this.trackName = trackName;
-	  this.trackRating = trackRating;
+	  this.trackRating = trackRating || 0;
 	  this.artistName = artistName;
 	}
 
@@ -131,7 +134,7 @@
 	});
 
 	function appendFavorites(favorite) {
-	  var favoriteHtml = '<li id="' + favorite.id + '">' + favorite.name + ' <br> By: ' + favorite.artist_name + ' <button class="add-btn btn" id="add-' + favorite.id + '">Add to Playlist</button> <button class="remove-btn btn" id="remove-' + favorite.id + '">Remove</button></li>';
+	  var favoriteHtml = '<li id="' + favorite.id + '">' + favorite.name + ' <br> By: ' + favorite.artist_name + '<br> Rating: ' + favorite.rating + '<button class="add-btn btn" id="add-' + favorite.id + '">Add to Playlist</button> <button class="remove-btn btn" id="remove-' + favorite.id + '">Remove</button></li>';
 	  document.querySelector(DOMstrings.favoritesList).insertAdjacentHTML('beforeend', favoriteHtml);
 	}
 
@@ -147,7 +150,7 @@
 
 	function postFavorites(favorites) {
 	  favorites.forEach(function (favorite) {
-	    var favoriteHtml = '<li id="' + favorite.id + '">' + favorite.name + ' <br> By: ' + favorite.artist_name + ' <button class="add-btn btn" id="add-' + favorite.id + '">Add to Playlist</button> <button class="remove-btn btn" id="remove-' + favorite.id + '">Remove</button></li>';
+	    var favoriteHtml = '<li id="' + favorite.id + '">' + favorite.name + ' <br> By: ' + favorite.artist_name + '<br> Rating: ' + favorite.rating + '<button class="add-btn btn" id="add-' + favorite.id + '">Add to Playlist</button> <button class="remove-btn btn" id="remove-' + favorite.id + '">Remove</button></li>';
 	    document.querySelector(DOMstrings.favoritesList).insertAdjacentHTML('beforeend', favoriteHtml);
 	  });
 	};
@@ -164,10 +167,93 @@
 
 	function listPlaylists(playlists) {
 	  playlists.forEach(function (playlist) {
-	    var playlistHtml = '<li id="' + playlist.id + '">Playlist Name: ' + playlist.playlist_name + '</li>';
+	    var playlistHtml = '<button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
 	    document.querySelector(DOMstrings.playlistsList).insertAdjacentHTML('beforeend', playlistHtml);
+	    listSongs(playlist.favorites, playlist.id);
 	  });
 	};
+
+	function listSongs(songs, playlist) {
+	  songs.forEach(function (song) {
+	    var songHtml = '<div id="' + song.id + '">Track Title: ' + song.name + ' Artist: ' + song.artist_name + ' Rating: ' + song.rating + '</div>';
+	    document.getElementById('songs-panel-' + playlist).insertAdjacentHTML('beforeend', songHtml);
+	  });
+	}
+
+	(function () {
+	  setTimeOut(function () {
+	    var playlists = Array.from($('.panel'));
+	    playlists.map(function (playlist) {
+	      debugger;
+	      var splitText = playlist.innerText.split(':');
+	    });
+	  }, 0);
+	});
+
+	document.querySelector(DOMstrings.favoritesList).addEventListener('click', function (event) {
+	  if (event.target.className === 'add-btn btn' && document.querySelector('.active')) {
+	    var rawHtml = event.path[1].innerHTML;
+	    var favoriteId = parseInt(event.path[1].id);
+	    var playlistId = document.querySelector('.active').id;
+	    getCleanFavorite(favoriteId, rawHtml, playlistId);
+	  }
+	});
+
+	function getCleanFavorite(id, rawHtml, playlistId) {
+	  var songRaw = void 0,
+	      newSongRaw = void 0,
+	      cleanPlaylistId = void 0;
+	  songRaw = rawHtml.split('<');
+	  newSongRaw = songRaw[0] + songRaw[1] + songRaw[2];
+	  newSongRaw = newSongRaw.replace(' br> By: ', ',');
+	  newSongRaw = newSongRaw.replace('br> Rating: ', ',');
+	  newSongRaw = newSongRaw.split(',');
+	  cleanPlaylistId = parseInt(playlistId.split('-')[1]);
+	  appendPlaylist(id, newSongRaw[0], newSongRaw[1], newSongRaw[2], cleanPlaylistId);
+	}
+
+	function appendPlaylist(id, name, artistName, rating, playlistId) {
+	  var newSongHtml = '<div id="' + id + '">Track Title: ' + name + ' Artist: ' + artistName + ' Rating: ' + rating + '</div>';
+	  document.getElementById('songs-panel-' + playlistId).insertAdjacentHTML('beforeend', newSongHtml);
+	  postFavoriteToPlaylist(id, playlistId);
+	}
+
+	function postFavoriteToPlaylist(favoriteSongId, playlistId) {
+	  fetch('http://localhost:3000/api/v1/playlists/' + playlistId + '/favorites/' + favoriteSongId, {
+	    method: 'POST',
+	    headers: { 'Content-Type': 'application/json' },
+	    body: JSON.stringify({
+	      playlist_favorites: {
+	        playlist_id: playlistId,
+	        favorite_id: favoriteSongId
+	      }
+	    })
+	  }).then(function () {
+	    return console.log('Song has been added');
+	  }).catch(function (error) {
+	    return console.error({ error: error });
+	  });
+	}
+
+	document.querySelector(DOMstrings.playlistsList).addEventListener('click', function (event) {
+	  if (event.target.className === 'accordion' || event.target.className === 'accordion active') {
+	    if (document.querySelector('.active')) {
+	      var oldSelection = document.querySelector('.active');
+	      oldSelection.classList.remove("active");
+	      oldSelection.nextElementSibling.style.display = "none";
+	      event.target.classList.toggle("active");
+	    } else {
+	      event.target.classList.toggle("active");
+	    }
+
+	    var panel = event.target.nextElementSibling;
+	    if (panel.style.display === "block") {
+	      panel.style.display = "none";
+	    } else {
+	      panel.style.display = "block";
+	    }
+	  }
+	});
 
 	function resetSearchField() {
 	  document.querySelector(DOMstrings.searchField).value = "";
@@ -231,7 +317,7 @@
 
 
 	// module
-	exports.push([module.id, "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box; }\n\nbody {\n  font-family: 'Fira Sans', sans-serif;\n  color: #131b23;\n  background-image: linear-gradient(#e9f1f7, #2274a5);\n  min-height: 100vh; }\n\nul {\n  list-style: none; }\n\nli {\n  padding: 0.5rem; }\n\n.favorite-star {\n  height: 5vh; }\n\n.search-form {\n  min-height: 10rem;\n  padding: 6rem;\n  display: flex;\n  flex-direction: column; }\n  .search-form h3, .search-form form {\n    margin: 0 auto; }\n\n.info-container {\n  display: flex;\n  justify-content: space-around; }\n\n.box {\n  min-height: 50vh;\n  width: 30vw;\n  background: rgba(19, 27, 35, 0.8);\n  color: #e9f1f7;\n  padding: 2rem; }\n  .box h2 {\n    color: #e7dfc6; }\n\n#search-results {\n  overflow: auto;\n  scroll-behavior: smooth; }\n\n.btn {\n  margin: 3px;\n  padding: 3px;\n  float: right;\n  font-size: xx-small;\n  background-color: #e7dfe6;\n  border: none; }\n\n#playlists-list {\n  overflow: auto;\n  scroll-behavior: smooth; }\n", ""]);
+	exports.push([module.id, "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box; }\n\nbody {\n  font-family: 'Fira Sans', sans-serif;\n  color: #131b23;\n  background-image: linear-gradient(#e9f1f7, #2274a5);\n  min-height: 100vh; }\n\nul {\n  list-style: none; }\n\nli {\n  padding: 0.5rem; }\n\n.favorite-star {\n  height: 5vh; }\n\n.search-form {\n  min-height: 10rem;\n  padding: 6rem;\n  display: flex;\n  flex-direction: column; }\n  .search-form h3, .search-form form {\n    margin: 0 auto; }\n\n.info-container {\n  display: flex;\n  justify-content: space-around; }\n\n.box {\n  min-height: 50vh;\n  width: 30vw;\n  background: rgba(19, 27, 35, 0.8);\n  color: #e9f1f7;\n  padding: 2rem; }\n  .box h2 {\n    color: #e7dfc6; }\n\n#search-results {\n  overflow: auto;\n  scroll-behavior: smooth; }\n\n.accordion {\n  background-color: #e7dfc6;\n  color: #black;\n  cursor: pointer;\n  padding: 18px;\n  width: 100%;\n  text-align: left;\n  border: none;\n  outline: none;\n  transition: 0.4s; }\n\n.active, .accordion:hover {\n  background-color: #816c61; }\n\n.panel {\n  padding: 0 18px;\n  background-color: #e9f1f7;\n  display: none;\n  overflow: hidden;\n  color: #131b23; }\n\n.btn {\n  margin: 3px;\n  padding: 3px;\n  float: right;\n  font-size: xx-small;\n  background-color: #e7dfe6;\n  border: none; }\n\n#playlists-list {\n  overflow: auto;\n  scroll-behavior: smooth; }\n", ""]);
 
 	// exports
 
