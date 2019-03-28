@@ -159,7 +159,7 @@
 	  });
 	};
 
-	(function () {
+	function getPlaylists() {
 	  fetch('https://morning-island-25788.herokuapp.com/api/v1/playlists').then(function (response) {
 	    return response.json();
 	  }).then(function (playlists) {
@@ -167,6 +167,10 @@
 	  }).catch(function (error) {
 	    return console.error({ error: error });
 	  });
+	}
+
+	(function () {
+	  getPlaylists();
 	})();
 
 	function playlistTotalRating(playlist) {
@@ -182,7 +186,7 @@
 	    return songTotal1 / playlist1.favorites.length - songTotal2 / playlist2.favorites.length;
 	  }).reverse();
 	  sortedPlaylists.forEach(function (playlist, index) {
-	    var playlistHtml = '<button class="remove-btn btn" id="remove-' + playlist.playlist_name + '">Remove</button><button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
+	    var playlistHtml = '<button class="remove-btn btn" id="remove-' + playlist.id + '">Remove</button><button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
 	    document.querySelector(DOMstrings.playlistsList).insertAdjacentHTML('beforeend', playlistHtml);
 	    listSongs(playlist.favorites, playlist.id);
 	  });
@@ -250,8 +254,9 @@
 	});
 
 	function appendPlaylistList(playlist) {
-	  var playlistHtml = '<button class="remove-btn btn" id="remove-' + playlist.playlist_name + '">Remove</button><button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
+	  var playlistHtml = '<button class="remove-btn btn" id="remove-' + playlist.id + '">Remove</button><button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
 	  document.querySelector(DOMstrings.playlistsList).insertAdjacentHTML('beforeend', playlistHtml);
+	  refetchPlaylists();
 	}
 
 	function getCleanFavorite(id, rawHtml, playlistId) {
@@ -309,12 +314,15 @@
 	    }
 	  } else if (event.target.className === "remove-btn btn") {
 	    var playlistRaw = event.target.nextElementSibling;
-	    var playlistId = playlistRaw.id.split('-');
+	    var playlistElementId = playlistRaw.id.split('-');
+	    var playlistId = parseInt(playlistElementId[1]);
 
 	    if (playlistId) {
-	      fetch('http://localhost:3000/api/v1/playlists/' + playlistId[1], {
+	      fetch('https://morning-island-25788.herokuapp.com/api/v1/playlists/' + playlistId, {
 	        method: 'DELETE',
 	        headers: { 'Content-Type': 'application/json' }
+	      }).then(function () {
+	        return refetchPlaylists();
 	      }).catch(function (error) {
 	        return console.error({ error: error });
 	      });
@@ -333,6 +341,15 @@
 	  if (trackObjArray !== undefined) {
 	    trackObjArray = [];
 	  }
+	}
+
+	function clearPlaylists() {
+	  document.querySelector(DOMstrings.playlistsList).innerHTML = "";
+	}
+
+	function refetchPlaylists() {
+	  clearPlaylists();
+	  getPlaylists();
 	}
 
 	document.getElementById('favorites-list').addEventListener('click', removeFavorite);
