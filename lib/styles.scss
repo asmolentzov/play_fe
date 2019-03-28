@@ -7,7 +7,6 @@
 body {
   font-family: 'Fira Sans', sans-serif;
   color: #131b23;
-  // background-image: linear-gradient(#e7dfc6, #816c61);
   background-image: linear-gradient(#e9f1f7, #2274a5);
   min-height: 100vh;
 }
@@ -31,6 +30,26 @@ li {
   flex-direction: column;
   h3, form {
     margin: 0 auto;
+  }
+}
+
+.playlist-fields {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 2rem 1rem 0;
+}
+
+.playlist-field-holder {
+  display: flex;
+  flex-direction: column;
+}
+
+.new-playlist, .update-active-playlist {
+  display: flex;
+  padding: 10px;
+  input {
+    margin-right: 10px;
+    width: 12rem;
   }
 }
 

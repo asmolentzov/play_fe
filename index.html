@@ -14,18 +14,23 @@
     </form>
   </div>
 
-  <div class="new-playlist">
-    <input id='playlist-title' type="text" placeholder="Enter a title for your playlist">
-    <button class="add-playlist btn" id='add-playlist'>Add Playlist</button>
-  </div>
+  <div class="playlist-fields">
+    <div class="playlist-field-holder">
+      <div class="new-playlist">
+        <input id='playlist-title' type="text" placeholder="Enter a title for your playlist">
+        <button class="add-playlist btn" id='add-playlist'>Add Playlist</button>
+      </div>
 
-  <div class="update-active-playlist">
-    <input id='update-playlist-title' type="text" placeholder="New Title">
-    <button class="update-btn btn" id="update-playlist">Update Playlist</button>
+      <div class="update-active-playlist">
+        <input id='update-playlist-title' type="text" placeholder="New Title">
+        <button class="update-btn btn" id="update-playlist">Update Playlist</button>
+      </div>
+    </div>
   </div>
 
   <div class="info-container">
     <div class="results box">
+      <h2>Songs</h2>
       <div id="searched-artist"></div>
       <ul id="search-results"></ul>
     </div>
@@ -35,7 +40,8 @@
       <ul id="favorites-list"></ul>
     </div>
     <div class="playlists box">
-          <ul id="playlists-list"></ul>
+      <h2>Playlists</h2>
+        <ul id="playlists-list"></ul>
     </div>
   </div>
 
