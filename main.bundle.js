@@ -48,15 +48,9 @@
 
 	__webpack_require__(1);
 
-	var trackObjArray = [];
-	// let BASE_URL = 'http://localhost:3000';
-	// if(NODE_ENV === 'production') {
-	//   BASE_URL = 'https://morning-island-25788.herokuapp.com/'
-	// };
-	// console.log(BASE_URL)
-	// console.log(NODE_ENV)
+	var trackObjArray = []; // This file is in the entry point in your webpack config.
 
-	// This file is in the entry point in your webpack config.
+
 	var DOMstrings = {
 	  searchButton: '#search-btn',
 	  searchField: '#search-field',
@@ -121,7 +115,7 @@
 	  var chosenSongIndex = listOfSongs.findIndex(function (k) {
 	    return k == songTitle;
 	  });
-	  fetch(("http://localhost:3000") + '/api/v1/favorites', {
+	  fetch('https://morning-island-25788.herokuapp.com/api/v1/favorites', {
 	    method: 'POST',
 	    headers: { 'Content-Type': 'application/json' },
 	    body: JSON.stringify({
@@ -147,7 +141,7 @@
 	}
 
 	(function () {
-	  fetch(("http://localhost:3000") + '/api/v1/favorites').then(function (response) {
+	  fetch('https://morning-island-25788.herokuapp.com/api/v1/favorites').then(function (response) {
 	    return response.json();
 	  }).then(function (favorites) {
 	    return postFavorites(favorites);
@@ -164,7 +158,7 @@
 	};
 
 	(function () {
-	  fetch(("http://localhost:3000") + '/api/v1/playlists').then(function (response) {
+	  fetch('https://morning-island-25788.herokuapp.com/api/v1/playlists').then(function (response) {
 	    return response.json();
 	  }).then(function (playlists) {
 	    return listPlaylists(playlists);
@@ -211,7 +205,7 @@
 	document.querySelector(DOMstrings.addPlaylistBtn).addEventListener('click', function (event) {
 	  var newPlaylistTitle = document.querySelector(DOMstrings.addPlaylistForm).value;
 	  if (newPlaylistTitle) {
-	    fetch(("http://localhost:3000") + '/api/v1/playlists', {
+	    fetch('https://morning-island-25788.herokuapp.com/api/v1/playlists', {
 	      method: 'POST',
 	      headers: { 'Content-Type': 'application/json' },
 	      body: JSON.stringify({
@@ -254,7 +248,7 @@
 	}
 
 	function postFavoriteToPlaylist(favoriteSongId, playlistId) {
-	  fetch(("http://localhost:3000") + ('/api/v1/playlists/' + playlistId + '/favorites/' + favoriteSongId), {
+	  fetch('https://morning-island-25788.herokuapp.com/api/v1/playlists/' + playlistId + '/favorites/' + favoriteSongId, {
 	    method: 'POST',
 	    headers: { 'Content-Type': 'application/json' },
 	    body: JSON.stringify({
@@ -308,7 +302,7 @@
 	function removeFavorite(event) {
 	  if (event.target.innerHTML === "Remove") {
 	    var favoriteId = event.target.id.split('-')[1];
-	    fetch(("http://localhost:3000") + '/api/v1/favorites/' + favoriteId, {
+	    fetch('https://morning-island-25788.herokuapp.com/api/v1/favorites/' + favoriteId, {
 	      method: 'DELETE'
 	    }).then().catch(function (error) {
 	      console.error({ error: error });
