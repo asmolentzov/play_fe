@@ -10,7 +10,7 @@
   "proxy": "https://localhost:3000/",
   "scripts": {
     "start": "node server.js",
-    "heroku-postbuild": "./node_modules/webpack/bin/webpack.js",
+    "heroku-postbuild": "./node_modules/webpack/bin/webpack.js -p",
     "devstart": "./node_modules/webpack-dev-server/bin/webpack-dev-server.js",
     "build": "./node_modules/webpack/bin/webpack.js",
     "test": "./node_modules/mocha/bin/mocha --compilers js:babel-core/register"
