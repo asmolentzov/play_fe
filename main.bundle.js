@@ -48,15 +48,9 @@
 
 	__webpack_require__(1);
 
-	var trackObjArray = [];
-	// let BASE_URL = 'http://localhost:3000';
-	// if(NODE_ENV === 'production') {
-	//   BASE_URL = 'https://morning-island-25788.herokuapp.com/'
-	// };
-	// console.log(BASE_URL)
-	// console.log(NODE_ENV)
+	var trackObjArray = []; // This file is in the entry point in your webpack config.
 
-	// This file is in the entry point in your webpack config.
+
 	var DOMstrings = {
 	  searchButton: '#search-btn',
 	  searchField: '#search-field',
@@ -69,7 +63,9 @@
 	  playlistsSongsList: '#playlists-songs-list',
 	  accordion: '.accordion',
 	  addPlaylistBtn: '#add-playlist',
-	  addPlaylistForm: '#playlist-title'
+	  addPlaylistForm: '#playlist-title',
+	  updatePlaylistBtn: '#update-playlist',
+	  updatePlaylistForm: '#update-playlist-title'
 	};
 
 	function Track(id, trackName, trackRating, artistName) {
@@ -186,7 +182,7 @@
 	    return songTotal1 / playlist1.favorites.length - songTotal2 / playlist2.favorites.length;
 	  }).reverse();
 	  sortedPlaylists.forEach(function (playlist, index) {
-	    var playlistHtml = '<button class="remove-btn btn" id="remove-' + playlist.id + '">Remove</button><button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
+	    var playlistHtml = '<button class="remove-btn btn" id="remove-' + playlist.playlist_name + '">Remove</button><button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
 	    document.querySelector(DOMstrings.playlistsList).insertAdjacentHTML('beforeend', playlistHtml);
 	    listSongs(playlist.favorites, playlist.id);
 	  });
@@ -194,7 +190,7 @@
 
 	function listSongs(songs, playlist) {
 	  songs.forEach(function (song) {
-	    var songHtml = '<div id="' + song.id + '">Track Title: ' + song.name + ' Artist: ' + song.artist_name + ' Rating: ' + song.rating + '</div>';
+	    var songHtml = '<div class="playlist-song" id="' + song.id + '">' + song.name + '<br>Artist: ' + song.artist_name + '<br>Rating: ' + song.rating + '</div>';
 	    document.getElementById('songs-panel-' + playlist).insertAdjacentHTML('beforeend', songHtml);
 	  });
 	}
@@ -229,8 +225,32 @@
 	  }
 	});
 
+	document.querySelector(DOMstrings.updatePlaylistBtn).addEventListener('click', function (event) {
+	  var activePlaylistRaw = document.querySelector('.active');
+	  var activePlaylistId = activePlaylistRaw.id.split('-');
+	  var newPlaylistTitle = document.querySelector(DOMstrings.updatePlaylistForm).value;
+
+	  if (newPlaylistTitle) {
+	    fetch('http://localhost:3000/api/v1/playlists/' + activePlaylistId[1], {
+	      method: 'PUT',
+	      headers: { 'Content-Type': 'application/json' },
+	      body: JSON.stringify({
+	        playlists: {
+	          playlist_name: newPlaylistTitle
+	        }
+	      })
+	    }).then(function (res) {
+	      return res.json();
+	    }).then(function (response) {
+	      return appendPlaylistList(response[0]);
+	    }).catch(function (error) {
+	      return console.error({ error: error });
+	    });
+	  }
+	});
+
 	function appendPlaylistList(playlist) {
-	  var playlistHtml = '<button class="remove-btn btn" id="remove-' + playlist.id + '">Remove</button><button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
+	  var playlistHtml = '<button class="remove-btn btn" id="remove-' + playlist.playlist_name + '">Remove</button><button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
 	  document.querySelector(DOMstrings.playlistsList).insertAdjacentHTML('beforeend', playlistHtml);
 	}
 
@@ -248,7 +268,7 @@
 	}
 
 	function appendPlaylist(id, name, artistName, rating, playlistId) {
-	  var newSongHtml = '<div id="' + id + '">Track Title: ' + name + ' Artist: ' + artistName + ' Rating: ' + rating + '</div>';
+	  var newSongHtml = '<div class="playlist-song" id="' + id + '">' + name + '<br>Artist: ' + artistName + '<br>Rating: ' + rating + '</div>';
 	  document.getElementById('songs-panel-' + playlistId).insertAdjacentHTML('beforeend', newSongHtml);
 	  postFavoriteToPlaylist(id, playlistId);
 	}
@@ -286,6 +306,18 @@
 	      panel.style.display = "none";
 	    } else {
 	      panel.style.display = "block";
+	    }
+	  } else if (event.target.className === "remove-btn btn") {
+	    var playlistRaw = event.target.nextElementSibling;
+	    var playlistId = playlistRaw.id.split('-');
+
+	    if (playlistId) {
+	      fetch('http://localhost:3000/api/v1/playlists/' + playlistId[1], {
+	        method: 'DELETE',
+	        headers: { 'Content-Type': 'application/json' }
+	      }).catch(function (error) {
+	        return console.error({ error: error });
+	      });
 	    }
 	  }
 	});
@@ -352,7 +384,7 @@
 
 
 	// module
-	exports.push([module.id, "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box; }\n\nbody {\n  font-family: 'Fira Sans', sans-serif;\n  color: #131b23;\n  background-image: linear-gradient(#e9f1f7, #2274a5);\n  min-height: 100vh; }\n\nul {\n  list-style: none; }\n\nli {\n  padding: 0.5rem; }\n\n.favorite-star {\n  height: 5vh; }\n\n.search-form {\n  min-height: 10rem;\n  padding: 6rem;\n  display: flex;\n  flex-direction: column; }\n  .search-form h3, .search-form form {\n    margin: 0 auto; }\n\n.info-container {\n  display: flex;\n  justify-content: space-around; }\n\n.box {\n  min-height: 50vh;\n  width: 30vw;\n  background: rgba(19, 27, 35, 0.8);\n  color: #e9f1f7;\n  padding: 2rem; }\n  .box h2 {\n    color: #e7dfc6; }\n\n#search-results {\n  overflow: auto;\n  scroll-behavior: smooth; }\n\n.accordion {\n  background-color: #e7dfc6;\n  color: #black;\n  cursor: pointer;\n  padding: 18px;\n  width: 100%;\n  text-align: left;\n  border: none;\n  outline: none;\n  transition: 0.4s; }\n\n.active, .accordion:hover {\n  background-color: #816c61; }\n\n.panel {\n  padding: 0 18px;\n  background-color: #e9f1f7;\n  display: none;\n  overflow: hidden;\n  color: #131b23; }\n\n.btn {\n  margin: 3px;\n  padding: 3px;\n  float: right;\n  font-size: xx-small;\n  background-color: #e7dfe6;\n  border: none; }\n\n#playlists-list {\n  overflow: auto;\n  scroll-behavior: smooth; }\n", ""]);
+	exports.push([module.id, "* {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box; }\n\nbody {\n  font-family: 'Fira Sans', sans-serif;\n  color: #131b23;\n  background-image: linear-gradient(#e9f1f7, #2274a5);\n  min-height: 100vh; }\n\nul {\n  list-style: none; }\n\nli {\n  padding: 0.5rem; }\n\n.favorite-star {\n  height: 5vh; }\n\n.search-form {\n  min-height: 10rem;\n  padding: 6rem;\n  display: flex;\n  flex-direction: column; }\n  .search-form h3, .search-form form {\n    margin: 0 auto; }\n\n.playlist-fields {\n  display: flex;\n  justify-content: flex-end;\n  margin: 0 2rem 1rem 0; }\n\n.playlist-field-holder {\n  display: flex;\n  flex-direction: column; }\n\n.new-playlist, .update-active-playlist {\n  display: flex;\n  padding: 10px; }\n  .new-playlist input, .update-active-playlist input {\n    margin-right: 10px;\n    width: 12rem; }\n\n.info-container {\n  display: flex;\n  justify-content: space-around; }\n\n.box {\n  min-height: 50vh;\n  width: 30vw;\n  background: rgba(19, 27, 35, 0.8);\n  color: #e9f1f7;\n  padding: 2rem; }\n  .box h2 {\n    color: #e7dfc6; }\n\n#search-results {\n  overflow: auto;\n  scroll-behavior: smooth; }\n\n.accordion {\n  background-color: #e7dfc6;\n  color: #black;\n  cursor: pointer;\n  padding: 18px;\n  width: 100%;\n  text-align: left;\n  border: none;\n  outline: none;\n  transition: 0.4s; }\n\n.active, .accordion:hover {\n  background-color: #816c61; }\n\n.panel {\n  padding: 0 18px;\n  background-color: #e9f1f7;\n  display: none;\n  overflow: hidden;\n  color: #131b23; }\n\n.playlist-song {\n  padding: 10px; }\n\n.btn {\n  margin: 3px;\n  padding: 3px;\n  float: right;\n  font-size: xx-small;\n  background-color: #e7dfe6;\n  border: none; }\n\n#playlists-list {\n  overflow: auto;\n  scroll-behavior: smooth; }\n", ""]);
 
 	// exports
 
