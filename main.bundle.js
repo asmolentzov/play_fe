@@ -48,9 +48,15 @@
 
 	__webpack_require__(1);
 
-	var trackObjArray = []; // This file is in the entry point in your webpack config.
+	var trackObjArray = [];
+	// let BASE_URL = 'http://localhost:3000';
+	// if(NODE_ENV === 'production') {
+	//   BASE_URL = 'https://morning-island-25788.herokuapp.com/'
+	// };
+	// console.log(BASE_URL)
+	// console.log(NODE_ENV)
 
-
+	// This file is in the entry point in your webpack config.
 	var DOMstrings = {
 	  searchButton: '#search-btn',
 	  searchField: '#search-field',
@@ -61,7 +67,9 @@
 	  favoriteRemove: '.remove-btn',
 	  playlistsList: '#playlists-list',
 	  playlistsSongsList: '#playlists-songs-list',
-	  accordion: '.accordion'
+	  accordion: '.accordion',
+	  addPlaylistBtn: '#add-playlist',
+	  addPlaylistForm: '#playlist-title'
 	};
 
 	function Track(id, trackName, trackRating, artistName) {
@@ -113,7 +121,7 @@
 	  var chosenSongIndex = listOfSongs.findIndex(function (k) {
 	    return k == songTitle;
 	  });
-	  fetch('http://localhost:3000/api/v1/favorites', {
+	  fetch(("http://localhost:3000") + '/api/v1/favorites', {
 	    method: 'POST',
 	    headers: { 'Content-Type': 'application/json' },
 	    body: JSON.stringify({
@@ -139,7 +147,7 @@
 	}
 
 	(function () {
-	  fetch('http://localhost:3000/api/v1/favorites').then(function (response) {
+	  fetch(("http://localhost:3000") + '/api/v1/favorites').then(function (response) {
 	    return response.json();
 	  }).then(function (favorites) {
 	    return postFavorites(favorites);
@@ -156,7 +164,7 @@
 	};
 
 	(function () {
-	  fetch('http://localhost:3000/api/v1/playlists').then(function (response) {
+	  fetch(("http://localhost:3000") + '/api/v1/playlists').then(function (response) {
 	    return response.json();
 	  }).then(function (playlists) {
 	    return listPlaylists(playlists);
@@ -165,9 +173,20 @@
 	  });
 	})();
 
+	function playlistTotalRating(playlist) {
+	  return playlist.favorites.reduce(function (accumulator, favorite) {
+	    return accumulator + favorite.rating;
+	  }, 0);
+	};
+
 	function listPlaylists(playlists) {
-	  playlists.forEach(function (playlist) {
-	    var playlistHtml = '<button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
+	  var sortedPlaylists = playlists.sort(function (playlist1, playlist2) {
+	    var songTotal1 = playlistTotalRating(playlist1);
+	    var songTotal2 = playlistTotalRating(playlist2);
+	    return songTotal1 / playlist1.favorites.length - songTotal2 / playlist2.favorites.length;
+	  }).reverse();
+	  sortedPlaylists.forEach(function (playlist, index) {
+	    var playlistHtml = '<button class="remove-btn btn" id="remove-' + playlist.id + '">Remove</button><button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
 	    document.querySelector(DOMstrings.playlistsList).insertAdjacentHTML('beforeend', playlistHtml);
 	    listSongs(playlist.favorites, playlist.id);
 	  });
@@ -180,16 +199,6 @@
 	  });
 	}
 
-	(function () {
-	  setTimeOut(function () {
-	    var playlists = Array.from($('.panel'));
-	    playlists.map(function (playlist) {
-	      debugger;
-	      var splitText = playlist.innerText.split(':');
-	    });
-	  }, 0);
-	});
-
 	document.querySelector(DOMstrings.favoritesList).addEventListener('click', function (event) {
 	  if (event.target.className === 'add-btn btn' && document.querySelector('.active')) {
 	    var rawHtml = event.path[1].innerHTML;
@@ -198,6 +207,32 @@
 	    getCleanFavorite(favoriteId, rawHtml, playlistId);
 	  }
 	});
+
+	document.querySelector(DOMstrings.addPlaylistBtn).addEventListener('click', function (event) {
+	  var newPlaylistTitle = document.querySelector(DOMstrings.addPlaylistForm).value;
+	  if (newPlaylistTitle) {
+	    fetch(("http://localhost:3000") + '/api/v1/playlists', {
+	      method: 'POST',
+	      headers: { 'Content-Type': 'application/json' },
+	      body: JSON.stringify({
+	        playlists: {
+	          playlist_name: newPlaylistTitle
+	        }
+	      })
+	    }).then(function (res) {
+	      return res.json();
+	    }).then(function (response) {
+	      return appendPlaylistList(response[0]);
+	    }).catch(function (error) {
+	      return console.error({ error: error });
+	    });
+	  }
+	});
+
+	function appendPlaylistList(playlist) {
+	  var playlistHtml = '<button class="remove-btn btn" id="remove-' + playlist.id + '">Remove</button><button class="accordion" id="playlist-' + playlist.id + '">' + playlist.playlist_name + '</button><div class="panel" id="songs-panel-' + playlist.id + '"></div>';
+	  document.querySelector(DOMstrings.playlistsList).insertAdjacentHTML('beforeend', playlistHtml);
+	}
 
 	function getCleanFavorite(id, rawHtml, playlistId) {
 	  var songRaw = void 0,
@@ -219,7 +254,7 @@
 	}
 
 	function postFavoriteToPlaylist(favoriteSongId, playlistId) {
-	  fetch('http://localhost:3000/api/v1/playlists/' + playlistId + '/favorites/' + favoriteSongId, {
+	  fetch(("http://localhost:3000") + ('/api/v1/playlists/' + playlistId + '/favorites/' + favoriteSongId), {
 	    method: 'POST',
 	    headers: { 'Content-Type': 'application/json' },
 	    body: JSON.stringify({
@@ -273,7 +308,7 @@
 	function removeFavorite(event) {
 	  if (event.target.innerHTML === "Remove") {
 	    var favoriteId = event.target.id.split('-')[1];
-	    fetch('http://localhost:3000/api/v1/favorites/' + favoriteId, {
+	    fetch(("http://localhost:3000") + '/api/v1/favorites/' + favoriteId, {
 	      method: 'DELETE'
 	    }).then().catch(function (error) {
 	      console.error({ error: error });
