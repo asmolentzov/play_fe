@@ -18,7 +18,9 @@ They can then "star" or favorite those songs:
 
 That will store the songs as "favorites", at which point a user can add them to a playlist or remove them as favorites:
 ![Favorites](readme_images/favorites.png)
-# Need to add info about playlists here once complete
+
+Once stored as a favorite, the user can add the songs to playlists. They can also create and rename playlists:
+![Favorites and Playlists](readme_images/favorites-playlists.png)
 
 ## Initial Setup
 To install this project on your local machine:
@@ -39,7 +41,7 @@ MUSIXMATCH_API_KEY=<your api key>
 ```
 6. Build: 
 ```
-npm build
+npm run build
 ```
 
 ## Running the Server Locally
@@ -51,8 +53,7 @@ Once running, point your browser to:
 ```
 http://localhost:8080/
 ```
-# This part will need updating: 
-Currently the base URL for the backend is set to run using a locally deployed backend. You can point it to either the [deployed backend](https://morning-island-25788.herokuapp.com/) or [pull down and run the backend](https://github.com/asmolentzov/play_be) locally also.  
+Currently the base URL for the backend is pointed to the [deployed backend](https://morning-island-25788.herokuapp.com/). If you wish to run the backend locally, you can [pull down and run the backend](https://github.com/asmolentzov/play_be), then update `index.js` with your local backend URL.  
 
 ## How to Contribute
 If you wish to contribute to this repo, you are welcome to make a PR and we would be happy to review it. 
