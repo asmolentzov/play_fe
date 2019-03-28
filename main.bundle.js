@@ -235,7 +235,7 @@
 	  var newPlaylistTitle = document.querySelector(DOMstrings.updatePlaylistForm).value;
 
 	  if (newPlaylistTitle) {
-	    fetch('http://localhost:3000/api/v1/playlists/' + activePlaylistId[1], {
+	    fetch('https://morning-island-25788.herokuapp.com/' + activePlaylistId[1], {
 	      method: 'PUT',
 	      headers: { 'Content-Type': 'application/json' },
 	      body: JSON.stringify({
