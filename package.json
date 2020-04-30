@@ -33,7 +33,7 @@
     "chai": "^3.5.0",
     "chromedriver": "^2.46.0",
     "css-loader": "^0.26.0",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "mocha": "^3.1.2",
     "mocha-loader": "^1.0.0",
     "node-libs-browser": "^1.0.0",
